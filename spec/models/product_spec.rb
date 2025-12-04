@@ -18,7 +18,8 @@ RSpec.describe Product, type: :model do
     end
 
     it "requires non-negative unit_cost" do
-      product = Product.new(name: "Cheese", unit: :oz, stock_quantity: 10, unit_cost: -1)
+      product = Product.new(name: "Cheese", unit: :oz, stock_quantity: 10, unit_cost: 1)
+      product.unit_cost = -5
       expect(product).not_to be_valid
     end
 

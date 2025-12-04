@@ -3,7 +3,15 @@ class Recipe < ApplicationRecord
     validates :recipe_type, presence: true
     
     has_many :recipe_ingredients
-    has_many :ingredients, through: :recipe_ingredients, source: :ingredient
+    has_many :ingredients,
+            through: :recipe_ingredients,
+            source: :ingredient,
+            source_type: 'Product'
+
+    has_many :subrecipes,
+            through: :recipe_ingredients,
+            source: :ingredient,
+            source_type: 'Recipe'
 
     def deplete_inventory
         recipe_ingredients.each do |ri|
