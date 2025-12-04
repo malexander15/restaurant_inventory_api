@@ -3,14 +3,21 @@ class Recipe < ApplicationRecord
     validates :recipe_type, presence: true
     
     has_many :recipe_ingredients
-    has_many :products, through: :recipe_ingredients
+    has_many :ingredients, through: :recipe_ingredients, source: :ingredient
 
     def deplete_inventory
         recipe_ingredients.each do |ri|
-            if ri.quantity > ri.product.stock_quantity
-                raise "Not enough stock for Cheese"
-            else
-                ri.product.update(stock_quantity: ri.product.stock_quantity - ri.quantity)
+            case ri.ingredient
+            when Product
+                product = ri.ingredient
+
+                if ri.quantity > product.stock_quantity
+                    raise StandardError.new("Insufficient stock for product #{product.name}")
+                end
+
+                product.update!(stock_quantity: product.stock_quantity - ri.quantity)
+            when Recipe
+                ri.ingredient.deplete_inventory
             end
         end
     end

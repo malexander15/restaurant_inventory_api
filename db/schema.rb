@@ -10,28 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_12_01_014450) do
-  create_table "inventory_depletions", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
+ActiveRecord::Schema[7.0].define(version: 2025_12_03_233304) do
   create_table "products", force: :cascade do |t|
-    t.string "name"
-    t.string "unit"
-    t.float "stock_quantity", default: 0.0
-    t.string "upc_code"
+    t.string "name", null: false
+    t.string "barcode"
+    t.integer "unit", null: false
+    t.decimal "stock_quantity", precision: 10, scale: 2, default: "0.0", null: false
+    t.decimal "unit_cost", precision: 10, scale: 2, default: "0.0", null: false
+    t.string "category"
+    t.string "vendor"
+    t.decimal "par_level", precision: 10, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["barcode"], name: "index_products_on_barcode", unique: true
   end
 
   create_table "recipe_ingredients", force: :cascade do |t|
     t.integer "recipe_id", null: false
-    t.integer "product_id", null: false
     t.float "quantity"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["product_id"], name: "index_recipe_ingredients_on_product_id"
+    t.integer "ingredient_id"
+    t.string "ingredient_type"
+    t.index ["ingredient_type", "ingredient_id"], name: "index_recipe_ingredients_on_ingredient"
     t.index ["recipe_id"], name: "index_recipe_ingredients_on_recipe_id"
   end
 
@@ -42,6 +43,5 @@ ActiveRecord::Schema[7.0].define(version: 2025_12_01_014450) do
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "recipe_ingredients", "products"
   add_foreign_key "recipe_ingredients", "recipes"
 end
