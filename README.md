@@ -1,24 +1,78 @@
-# README
+# Restaurant Inventory API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A Rails 7 API for managing restaurant inventory using products, recipes, and recursive inventory depletion.
 
-Things you may want to cover:
+# Project Overview
 
-* Ruby version
+This project is an internal inventory management API designed for restaurant use.
 
-* System dependencies
+It models:
+- Raw ingredients (products)
+- Prepped items (recipes made from products)
+- Menu items (recipes made from products and/or other recipes)
 
-* Configuration
+Inventory is automatically depleted based on recipes sold, including nested prepped items.
 
-* Database creation
+## Tech Stack
 
-* Database initialization
+- Ruby 3.2
+- Rails 7 (API-only)
+- PostgreSQL / SQLite (dev)
+- RSpec for testing
+- rack-cors for CORS handling
 
-* How to run the test suite
+## Core Features
 
-* Services (job queues, cache servers, search engines, etc.)
+- Product inventory tracking (by weight or unit)
+- Recipes composed of products and/or other recipes
+- Polymorphic ingredient system
+- Recursive inventory depletion
+- Stock validation to prevent negative inventory
+- Versioned REST API (`/api/v1`)
 
-* Deployment instructions
+## Data Model Overview
 
-* ...
+- **Product**
+  - Raw inventory items (e.g. cheese, chicken)
+- **Recipe**
+  - Menu items or prepped items (Grilled Chicken Breast: Prepped Item or Quesadilla: Which can be composed of many different products or prepped items aka recipes)
+- **RecipeIngredient**
+  - Polymorphic join model connecting recipes to products or other recipes
+
+  ## API Endpoints
+
+### Products
+- `GET /api/v1/products`
+- `POST /api/v1/products`
+- `GET /api/v1/products/:id`
+- `PATCH /api/v1/products/:id`
+- `DELETE /api/v1/products/:id`
+
+### Recipes
+- `GET /api/v1/recipes`
+- `POST /api/v1/recipes`
+- `GET /api/v1/recipes/:id`
+- `POST /api/v1/recipes/:id/deplete`
+
+### Recipe Ingredients
+- `POST /api/v1/recipes/:recipe_id/recipe_ingredients`
+- `PATCH /api/v1/recipes/:recipe_id/recipe_ingredients/:id`
+- `DELETE /api/v1/recipes/:recipe_id/recipe_ingredients/:id`
+
+## Setup
+
+```bash
+git clone git@github.com:yourusername/restaurant_inventory_api.git
+cd restaurant_inventory_api
+bundle install
+rails db:create db:migrate
+rails s -p 3000
+
+## Future Improvements
+
+- Authentication and authorization
+- Inventory reporting and alerts
+- Integration with POS systems
+- Frontend interface using Next.js
+- Barcode scanning support
+
