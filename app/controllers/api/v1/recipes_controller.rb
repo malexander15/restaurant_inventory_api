@@ -1,12 +1,20 @@
 class Api::V1::RecipesController < ApplicationController
   def index
-    recipes = Recipe.all
-    render json: recipes, include: { recipe_ingredients: { include: :ingredient } }
+    recipes = Recipe.includes(:recipe_ingredients).all
+    render json: recipes.as_json(include: {
+      recipe_ingredients: {
+        include: { ingredient: { only: [:id, :name, :stock_quantity, :unit] } }
+      }
+    })
   end
 
   def show
     recipe = Recipe.find(params[:id])
-    render json: recipe, include: { recipe_ingredients: { include: :ingredient } }
+    render json: recipe.as_json(include: {
+      recipe_ingredients: {
+        include: { ingredient: { only: [:id, :name, :stock_quantity, :unit] } }
+      }
+    })
   end
 
   def create
@@ -37,12 +45,15 @@ class Api::V1::RecipesController < ApplicationController
 
   def deplete
     recipe = Recipe.find(params[:id])
-    recipe.deplete_inventory
 
-    render json: { message: "Inventory depleted successfully" }
-  rescue => e
-    render json: { error: e.message }, status: :unprocessable_entity
+    begin
+      recipe.deplete_inventory
+      render json: { message: "Inventory updated successfully" }, status: :ok
+    rescue StandardError => e
+      render json: { error: e.message }, status: :unprocessable_entity
+    end
   end
+
 
   private
 
