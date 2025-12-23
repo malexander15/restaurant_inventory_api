@@ -20,7 +20,7 @@ RSpec.describe Recipe, type: :model do
 
     it "can have recipe ingredients (prepped items)" do
       parent = Recipe.create!(name: "Quesadilla", recipe_type: "menu_item")
-      prep = Recipe.create!(name: "Grilled Chicken", recipe_type: "prep")
+      prep = Recipe.create!(name: "Grilled Chicken", recipe_type: "prepped_item")
 
       RecipeIngredient.create!(recipe: parent, ingredient: prep, quantity: 1)
 

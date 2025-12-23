@@ -1,4 +1,5 @@
 class Recipe < ApplicationRecord
+    enum recipe_type: { prepped_item: 0, menu_item: 1 }
     validates :name, presence: true
     validates :recipe_type, presence: true
     

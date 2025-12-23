@@ -14,7 +14,7 @@ RSpec.describe "Inventory depletion", type: :model do
 
   it "recursively depletes ingredients of sub-recipes" do
     raw = Product.create!(name: "Raw Chicken", unit: "oz", stock_quantity: 50)
-    grilled = Recipe.create!(name: "Grilled Chicken", recipe_type: "prep")
+    grilled = Recipe.create!(name: "Grilled Chicken", recipe_type: "prepped_item")
     quesadilla = Recipe.create!(name: "Quesadilla", recipe_type: "menu_item")
 
     # Grilled chicken uses 10 oz raw chicken
@@ -30,7 +30,7 @@ RSpec.describe "Inventory depletion", type: :model do
 
   it "raises an error if any ingredient (even nested) is insufficient" do
     raw = Product.create!(name: "Raw Chicken", unit: "oz", stock_quantity: 5)
-    grilled = Recipe.create!(name: "Grilled Chicken", recipe_type: "prep")
+    grilled = Recipe.create!(name: "Grilled Chicken", recipe_type: "prepped_item")
     quesadilla = Recipe.create!(name: "Quesadilla", recipe_type: "menu_item")
 
     RecipeIngredient.create!(recipe: grilled, ingredient: raw, quantity: 10)
