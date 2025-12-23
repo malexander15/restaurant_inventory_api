@@ -1,6 +1,6 @@
 class Api::V1::RecipesController < ApplicationController
   def index
-    recipes = Recipe.includes(:recipe_ingredients).all
+    recipes = Recipe.includes(recipe_ingredients: :ingredient).all
     render json: recipes.as_json(include: {
       recipe_ingredients: {
         include: { ingredient: { only: [:id, :name, :stock_quantity, :unit] } }
