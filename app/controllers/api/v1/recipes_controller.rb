@@ -45,14 +45,15 @@ class Api::V1::RecipesController < ApplicationController
 
   def deplete
     recipe = Recipe.find(params[:id])
+    quantity = params[:quantity].to_i
 
-    begin
-      recipe.deplete_inventory
-      render json: { message: "Inventory updated successfully" }, status: :ok
-    rescue StandardError => e
-      render json: { error: e.message }, status: :unprocessable_entity
-    end
+    recipe.deplete_inventory!(quantity)
+
+    render json: { message: "Inventory depleted successfully" }
+  rescue StandardError => e
+    render json: { error: e.message }, status: :unprocessable_entity
   end
+
 
 
   private

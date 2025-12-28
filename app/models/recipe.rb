@@ -14,20 +14,23 @@ class Recipe < ApplicationRecord
             source: :ingredient,
             source_type: 'Recipe'
 
-    def deplete_inventory
-        recipe_ingredients.each do |ri|
-            case ri.ingredient
-            when Product
-                product = ri.ingredient
+  def deplete_inventory!(multiplier = 1)
+    recipe_ingredients.each do |ri|
+      case ri.ingredient
+      when Product
+        required_qty = ri.quantity * multiplier
 
-                if ri.quantity > product.stock_quantity
-                    raise StandardError.new("Insufficient stock for product #{product.name}")
-                end
-
-                product.update!(stock_quantity: product.stock_quantity - ri.quantity)
-            when Recipe
-                ri.ingredient.deplete_inventory
-            end
+        if ri.ingredient.stock_quantity < required_qty
+          raise StandardError, "Not enough stock for #{ri.ingredient.name}"
         end
+
+        ri.ingredient.update!(
+          stock_quantity: ri.ingredient.stock_quantity - required_qty
+        )
+
+      when Recipe
+        ri.ingredient.deplete_inventory!(ri.quantity * multiplier)
+      end
     end
+  end
 end
