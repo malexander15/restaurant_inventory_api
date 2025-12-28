@@ -1,12 +1,32 @@
 class Api::V1::RecipesController < ApplicationController
   def index
-    recipes = Recipe.includes(recipe_ingredients: :ingredient).all
+    recipes = Recipe.all
+
+    # Filter by recipe type if requested
+    if params[:recipe_type].present?
+      recipes = recipes.where(recipe_type: params[:recipe_type])
+    end
+
+    # If the client only needs basic data (like for depletion)
+    if params[:simple] == "true"
+      render json: recipes.select(:id, :name)
+      return
+    end
+
+    # Full payload (default)
+    recipes = recipes.includes(recipe_ingredients: :ingredient)
+
     render json: recipes.as_json(include: {
       recipe_ingredients: {
-        include: { ingredient: { only: [:id, :name, :stock_quantity, :unit] } }
+        include: {
+          ingredient: {
+            only: [:id, :name, :stock_quantity, :unit]
+          }
+        }
       }
     })
   end
+
 
   def show
     recipe = Recipe.find(params[:id])
