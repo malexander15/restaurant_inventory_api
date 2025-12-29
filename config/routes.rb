@@ -5,7 +5,10 @@ Rails.application.routes.draw do
   # root "articles#index"
   namespace :api do
     namespace :v1 do
-      resources :products
+      resources :products do
+        post :replenish, on: :member
+      end
+
       resources :recipes do
         post :deplete, on: :member
         resources :recipe_ingredients, only: [:create, :update, :destroy]
