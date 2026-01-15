@@ -1,16 +1,16 @@
 class Api::V1::ProductsController < ApplicationController
   def index
-    products = Product.all
+    products = current_restaurant.products
     render json: products
   end
 
   def show
-    product = Product.find(params[:id])
+    product = current_restaurant.products.find(params[:id])
     render json: product
   end
 
   def create
-    product = Product.new(product_params)
+    product = current_restaurant.products.new(product_params)
 
     if product.save
       render json: product, status: :created
@@ -20,7 +20,7 @@ class Api::V1::ProductsController < ApplicationController
   end
 
   def update
-    product = Product.find(params[:id])
+    product = current_restaurant.products.find(params[:id])
 
     if product.update(product_params)
       render json: product
@@ -30,19 +30,19 @@ class Api::V1::ProductsController < ApplicationController
   end
 
   def destroy
-    product = Product.find(params[:id])
+    product = current_restaurant.products.find(params[:id])
     product.destroy
 
     head :no_content
   end
 
-  # app/controllers/api/v1/products_controller.rb
   def replenish
-    product = Product.find(params[:id])
+    product = current_restaurant.products.find(params[:id])
     qty = params[:quantity].to_f
 
     if qty <= 0
-      render json: { error: "Quantity must be greater than zero" }, status: :unprocessable_entity
+      render json: { error: "Quantity must be greater than zero" },
+             status: :unprocessable_entity
       return
     end
 
@@ -54,13 +54,18 @@ class Api::V1::ProductsController < ApplicationController
     }, status: :ok
   end
 
-
   private
 
   def product_params
     params.require(:product).permit(
-      :name, :barcode, :unit, :stock_quantity, :unit_cost,
-      :category, :vendor, :par_level
+      :name,
+      :barcode,
+      :unit,
+      :stock_quantity,
+      :unit_cost,
+      :category,
+      :vendor,
+      :par_level
     )
   end
 end

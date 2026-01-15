@@ -5,6 +5,10 @@ Rails.application.routes.draw do
   # root "articles#index"
   namespace :api do
     namespace :v1 do
+      post "login", to: "auth#login"
+      post "signup", to: "auth#signup" # optional but recommended
+      post "/logout", to: "auth#logout"
+
       resources :products do
         post :replenish, on: :member
       end
