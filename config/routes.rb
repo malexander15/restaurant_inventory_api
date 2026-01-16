@@ -8,6 +8,9 @@ Rails.application.routes.draw do
       post "login", to: "auth#login"
       post "signup", to: "auth#signup" # optional but recommended
       post "/logout", to: "auth#logout"
+      post "/password/forgot", to: "password_resets#create"
+      post "/password/reset",  to: "password_resets#update"
+
 
       resources :products do
         post :replenish, on: :member
