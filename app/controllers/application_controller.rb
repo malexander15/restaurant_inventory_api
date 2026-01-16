@@ -14,6 +14,6 @@ class ApplicationController < ActionController::API
   end
 
   def current_restaurant
-    @current_restaurant ||= Restaurant.find(decoded_token[:restaurant_id])
+    @current_restaurant
   end
 end
