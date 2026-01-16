@@ -10,6 +10,8 @@ Rails.application.routes.draw do
       post "/logout", to: "auth#logout"
       post "/password/forgot", to: "password_resets#create"
       post "/password/reset",  to: "password_resets#update"
+      get  "/me",     to: "restaurants#me"
+      patch "/me",    to: "restaurants#update"
 
 
       resources :products do
