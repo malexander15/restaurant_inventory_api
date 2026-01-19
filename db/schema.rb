@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_01_16_022008) do
+ActiveRecord::Schema[7.0].define(version: 2026_01_16_222752) do
   create_table "products", force: :cascade do |t|
     t.string "name", null: false
     t.string "barcode"
@@ -23,7 +23,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_01_16_022008) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "restaurant_id", null: false
-    t.index ["barcode"], name: "index_products_on_barcode", unique: true
+    t.index ["restaurant_id", "barcode"], name: "index_products_on_restaurant_id_and_barcode", unique: true
     t.index ["restaurant_id"], name: "index_products_on_restaurant_id"
   end
 

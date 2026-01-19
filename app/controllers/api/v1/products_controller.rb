@@ -54,6 +54,16 @@ class Api::V1::ProductsController < ApplicationController
     }, status: :ok
   end
 
+  def by_barcode
+  product = current_restaurant.products.find_by(barcode: params[:barcode])
+
+  if product
+    render json: product
+  else
+    render json: { error: "Product not found" }, status: :not_found
+  end
+end
+
   private
 
   def product_params
