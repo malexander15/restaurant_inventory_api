@@ -15,4 +15,10 @@ class Product < ApplicationRecord
     return false unless par_level.present?
     stock_quantity < par_level
   end
+
+  def replenish!(qty)
+    qty = qty.to_f
+    raise ArgumentError, "Quantity must be greater than zero" if qty <= 0
+    increment!(:stock_quantity, qty)
+  end
 end

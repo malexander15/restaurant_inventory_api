@@ -38,31 +38,25 @@ class Api::V1::ProductsController < ApplicationController
 
   def replenish
     product = current_restaurant.products.find(params[:id])
-    qty = params[:quantity].to_f
-
-    if qty <= 0
-      render json: { error: "Quantity must be greater than zero" },
-             status: :unprocessable_entity
-      return
-    end
-
-    product.increment!(:stock_quantity, qty)
+    product.replenish!(params[:quantity])
 
     render json: {
       message: "Inventory replenished",
       product: product
     }, status: :ok
+  rescue ArgumentError => e
+    render json: { error: e.message }, status: :unprocessable_entity
   end
 
   def by_barcode
-  product = current_restaurant.products.find_by(barcode: params[:barcode])
+    product = current_restaurant.products.find_by(barcode: params[:barcode])
 
-  if product
-    render json: product
-  else
-    render json: { error: "Product not found" }, status: :not_found
+    if product
+      render json: product
+    else
+      render json: { error: "Product not found" }, status: :not_found
+    end
   end
-end
 
   private
 

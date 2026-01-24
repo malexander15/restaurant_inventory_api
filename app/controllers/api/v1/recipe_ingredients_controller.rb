@@ -28,7 +28,7 @@ class Api::V1::RecipeIngredientsController < ApplicationController
   private
 
   def set_recipe
-    @recipe = Recipe.find(params[:recipe_id])
+    @recipe = current_restaurant.recipes.find(params[:recipe_id])
   end
 
   def recipe_ingredient_params

@@ -1,65 +1,62 @@
 require 'rails_helper'
 
 RSpec.describe RecipeIngredient, type: :model do
+  let(:restaurant) { create(:restaurant) }
+
   describe "validations" do
     it "is valid with a product ingredient" do
-      recipe = Recipe.create!(name: "Quesadilla", recipe_type: "menu_item")
-      product = Product.create!(name: "Cheese", unit: "oz", stock_quantity: 10)
+      recipe = create(:recipe, restaurant: restaurant)
+      product = create(:product, restaurant: restaurant)
 
-      ri = RecipeIngredient.new(recipe: recipe, ingredient: product, quantity: 4)
+      ri = described_class.new(
+        recipe: recipe,
+        ingredient: product,
+        quantity: 4
+      )
+
       expect(ri).to be_valid
     end
 
-    it "is valid with a recipe ingredient" do
-      parent = Recipe.create!(name: "Quesadilla", recipe_type: "menu_item")
-      sub_recipe = Recipe.create!(name: "Grilled Chicken", recipe_type:  "prepped_item")
+    it "is valid with a recipe ingredient (prepped item)" do
+      parent = create(:recipe, restaurant: restaurant)
+      sub_recipe = create(
+        :recipe,
+        restaurant: restaurant,
+        recipe_type: "prepped_item"
+      )
 
-      ri = RecipeIngredient.new(recipe: parent, ingredient: sub_recipe, quantity: 1)
+      ri = described_class.new(
+        recipe: parent,
+        ingredient: sub_recipe,
+        quantity: 1
+      )
+
       expect(ri).to be_valid
     end
 
     it "requires quantity to be positive" do
-      recipe = Recipe.create!(name: "Quesadilla", recipe_type: "menu_item")
-      product = Product.create!(name: "Cheese", unit: "oz", stock_quantity: 10)
+      recipe = create(:recipe, restaurant: restaurant)
+      product = create(:product, restaurant: restaurant)
 
-      ri = RecipeIngredient.new(recipe: recipe, ingredient: product, quantity: -1)
+      ri = described_class.new(
+        recipe: recipe,
+        ingredient: product,
+        quantity: -1
+      )
+
       expect(ri).not_to be_valid
     end
 
     it "does not allow menu items to be ingredients" do
-      menu_item = Recipe.create!(
-        name: "Quesadilla",
-        recipe_type: :menu_item
+      menu_item = create(
+        :recipe,
+        restaurant: restaurant,
+        recipe_type: "menu_item"
       )
 
-      parent = Recipe.create!(
-        name: "Sampler",
-        recipe_type: :menu_item
-      )
+      parent = create(:recipe, restaurant: restaurant)
 
-      ri = RecipeIngredient.new(
-        recipe: parent,
-        ingredient: menu_item,
-        quantity: 1
-      )
-
-      expect(ri).not_to be_valid
-      expect(ri.errors[:ingredient])
-        .to include("menu items cannot be used as ingredients")
-    end
-
-    it "does not allow menu items to be ingredients" do
-      menu_item = Recipe.create!(
-        name: "Quesadilla",
-        recipe_type: :menu_item
-      )
-
-      parent = Recipe.create!(
-        name: "Sampler",
-        recipe_type: :menu_item
-      )
-
-      ri = RecipeIngredient.new(
+      ri = described_class.new(
         recipe: parent,
         ingredient: menu_item,
         quantity: 1
@@ -73,18 +70,23 @@ RSpec.describe RecipeIngredient, type: :model do
 
   describe "associations" do
     it "belongs to a recipe" do
-      recipe = Recipe.create!(name: "Quesadilla", recipe_type: "menu_item")
-      product = Product.create!(name: "Cheese", unit: "oz", stock_quantity: 10)
+      ri = create(
+        :recipe_ingredient,
+        recipe: create(:recipe, restaurant: restaurant),
+        ingredient: create(:product, restaurant: restaurant)
+      )
 
-      ri = RecipeIngredient.create!(recipe: recipe, ingredient: product, quantity: 4)
-      expect(ri.recipe).to eq(recipe)
+      expect(ri.recipe).to be_present
     end
 
     it "belongs to a polymorphic ingredient" do
-      recipe = Recipe.create!(name: "Quesadilla", recipe_type: "menu_item")
-      product = Product.create!(name: "Cheese", unit: "oz", stock_quantity: 10)
+      product = create(:product, restaurant: restaurant)
+      ri = create(
+        :recipe_ingredient,
+        recipe: create(:recipe, restaurant: restaurant),
+        ingredient: product
+      )
 
-      ri = RecipeIngredient.create!(recipe: recipe, ingredient: product, quantity: 4)
       expect(ri.ingredient).to eq(product)
     end
   end

@@ -1,8 +1,9 @@
 FactoryBot.define do
   factory :product do
-    name { Faker::Food.ingredient }
+    name { "Cheese" }
     unit { "oz" }
-    stock_quantity { 10.0 }
-    upc_code { Faker::Barcode.ean(12) }
+    stock_quantity { 10 }
+    unit_cost { 1.0 }
+    association :restaurant
   end
 end

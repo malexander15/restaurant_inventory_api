@@ -77,13 +77,13 @@ class Api::V1::RecipesController < ApplicationController
     recipe.deplete_inventory!(quantity)
 
     render json: { message: "Inventory depleted successfully" }
-  rescue StandardError => e
-    render json: { error: e.message }, status: :unprocessable_entity
+    rescue StandardError => e
+      render json: { error: e.message }, status: :unprocessable_entity
   end
 
-  private
+    private
 
-  def recipe_params
-    params.require(:recipe).permit(:name, :recipe_type)
+    def recipe_params
+      params.require(:recipe).permit(:name, :recipe_type)
+    end
   end
-end
