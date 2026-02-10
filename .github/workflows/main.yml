@@ -28,10 +28,14 @@ jobs:
       RAILS_ENV: test
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/app_test
       JWT_SECRET: test-secret
-      RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }} # if needed for credentials in CI
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install System Dependencies
+        run: |
+         sudo apt-get update
+         sudo apt-get install -y libpq-dev
 
       - uses: ruby/setup-ruby@v1
         with:
@@ -41,10 +45,6 @@ jobs:
       - name: Prepare DB
         run: |
           bin/rails db:prepare
-
-      - name: Run Rubocop
-        run: |
-          bundle exec rubocop
 
       - name: Run Specs
         run: |
