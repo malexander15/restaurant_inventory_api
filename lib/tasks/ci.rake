@@ -31,10 +31,10 @@ namespace :ci do
       name: "Cheese"
     ) do |p|
       p.unit = "oz"
-      p.stock = 1000
+      p.stock_quantity = 1000
       p.cost = 0.25
     end
 
-    puts "🧀 Cheese product ready"
+    puts "Cheese product ready"
   end
 end
