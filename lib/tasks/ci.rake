@@ -21,5 +21,20 @@ namespace :ci do
     restaurant.save!
 
     puts "✅ CI restaurant ready (id=#{restaurant.id})"
+
+    #   Seed baseline products
+    puts "Seeding baseline products..."
+
+
+    Product.find_or_create_by!(
+      restaurant: restaurant,
+      name: "Cheese"
+    ) do |p|
+      p.unit = "oz"
+      p.stock = 1000
+      p.cost = 0.25
+    end
+
+    puts "🧀 Cheese product ready"
   end
 end
