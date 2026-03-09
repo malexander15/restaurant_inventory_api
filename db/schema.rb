@@ -10,11 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_01_16_222752) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_09_205901) do
+  create_table "product_categories", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "restaurant_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["restaurant_id", "name"], name: "index_product_categories_on_restaurant_id_and_name", unique: true
+    t.index ["restaurant_id"], name: "index_product_categories_on_restaurant_id"
+  end
+
   create_table "products", force: :cascade do |t|
     t.string "name", null: false
     t.string "barcode"
-    t.integer "unit", null: false
     t.decimal "stock_quantity", precision: 10, scale: 2, default: "0.0", null: false
     t.decimal "unit_cost", precision: 10, scale: 2, default: "0.0", null: false
     t.string "category"
@@ -23,6 +31,9 @@ ActiveRecord::Schema[7.0].define(version: 2026_01_16_222752) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "restaurant_id", null: false
+    t.string "unit", null: false
+    t.integer "product_category_id"
+    t.index ["product_category_id"], name: "index_products_on_product_category_id"
     t.index ["restaurant_id", "barcode"], name: "index_products_on_restaurant_id_and_barcode", unique: true
     t.index ["restaurant_id"], name: "index_products_on_restaurant_id"
   end
@@ -56,9 +67,13 @@ ActiveRecord::Schema[7.0].define(version: 2026_01_16_222752) do
     t.string "logo_url"
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
+    t.text "product_units", default: "[\"oz\",\"pcs\"]", null: false
+    t.text "product_categories", default: "[]", null: false
     t.index ["email"], name: "index_restaurants_on_email", unique: true
   end
 
+  add_foreign_key "product_categories", "restaurants"
+  add_foreign_key "products", "product_categories"
   add_foreign_key "products", "restaurants"
   add_foreign_key "recipe_ingredients", "recipes"
   add_foreign_key "recipes", "restaurants"
