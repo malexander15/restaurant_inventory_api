@@ -67,7 +67,7 @@ class Api::V1::ProductsController < ApplicationController
       :unit,
       :stock_quantity,
       :unit_cost,
-      :category,
+      :product_category_id,
       :vendor,
       :par_level
     )

@@ -3,6 +3,7 @@ class Product < ApplicationRecord
 
   has_many :recipe_ingredients, as: :ingredient
   belongs_to :restaurant
+  belongs_to :product_category, optional: true
 
   validates :name, presence: true
   validates :unit, presence: true

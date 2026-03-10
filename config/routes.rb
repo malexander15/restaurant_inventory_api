@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       get  "/me",     to: "restaurants#me"
       patch "/me",    to: "restaurants#update"
 
+      resources :product_categories, only: [:index]
 
       resources :products do
         post :replenish, on: :member
