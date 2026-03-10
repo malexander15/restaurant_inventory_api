@@ -23,14 +23,14 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_10_010511) do
   create_table "products", force: :cascade do |t|
     t.string "name", null: false
     t.string "barcode"
+    t.integer "unit", null: false
     t.decimal "stock_quantity", precision: 10, scale: 2, default: "0.0", null: false
     t.decimal "unit_cost", precision: 10, scale: 2, default: "0.0", null: false
     t.string "vendor"
     t.decimal "par_level", precision: 10, scale: 2
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "restaurant_id", null: false
-    t.string "unit", null: false
     t.integer "product_category_id"
     t.index ["product_category_id"], name: "index_products_on_product_category_id"
     t.index ["restaurant_id", "barcode"], name: "index_products_on_restaurant_id_and_barcode", unique: true
@@ -61,13 +61,11 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_10_010511) do
     t.string "name", null: false
     t.string "email", null: false
     t.string "password_digest"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "logo_url"
     t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.text "product_units", default: "[\"oz\",\"pcs\"]", null: false
-    t.text "product_categories", default: "[]", null: false
+    t.datetime "reset_password_sent_at", precision: nil
     t.index ["email"], name: "index_restaurants_on_email", unique: true
   end
 
