@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_03_09_205901) do
+ActiveRecord::Schema[7.0].define(version: 2026_03_10_010511) do
   create_table "product_categories", force: :cascade do |t|
     t.string "name", null: false
     t.integer "restaurant_id", null: false
@@ -25,7 +25,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_09_205901) do
     t.string "barcode"
     t.decimal "stock_quantity", precision: 10, scale: 2, default: "0.0", null: false
     t.decimal "unit_cost", precision: 10, scale: 2, default: "0.0", null: false
-    t.string "category"
     t.string "vendor"
     t.decimal "par_level", precision: 10, scale: 2
     t.datetime "created_at", null: false
