@@ -1,7 +1,7 @@
 class Api::V1::ProductsController < ApplicationController
   def index
     products = current_restaurant.products
-    render json: products
+    render json: products.as_json(include: :product_category)
   end
 
   def show
