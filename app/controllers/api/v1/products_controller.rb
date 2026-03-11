@@ -6,14 +6,14 @@ class Api::V1::ProductsController < ApplicationController
 
   def show
     product = current_restaurant.products.find(params[:id])
-    render json: product
+    render json: product.as_json(include: :product_category)
   end
 
   def create
     product = current_restaurant.products.new(product_params)
 
     if product.save
-      render json: product, status: :created
+      render json: product.as_json(include: :product_category), status: :created
     else
       render json: { errors: product.errors.full_messages }, status: :unprocessable_entity
     end
@@ -23,7 +23,7 @@ class Api::V1::ProductsController < ApplicationController
     product = current_restaurant.products.find(params[:id])
 
     if product.update(product_params)
-      render json: product
+      render json: product.as_json(include: :product_category)
     else
       render json: { errors: product.errors.full_messages }, status: :unprocessable_entity
     end
@@ -42,7 +42,7 @@ class Api::V1::ProductsController < ApplicationController
 
     render json: {
       message: "Inventory replenished",
-      product: product
+      product: product.as_json(include: :product_category)
     }, status: :ok
   rescue ArgumentError => e
     render json: { error: e.message }, status: :unprocessable_entity
@@ -52,7 +52,7 @@ class Api::V1::ProductsController < ApplicationController
     product = current_restaurant.products.find_by(barcode: params[:barcode])
 
     if product
-      render json: product
+      render json: product.as_json(include: :product_category)
     else
       render json: { error: "Product not found" }, status: :not_found
     end
