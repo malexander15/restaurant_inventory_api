@@ -15,6 +15,8 @@ Rails.application.routes.draw do
 
       resources :product_categories, only: [:index, :create]
 
+      resources :ingredients
+
       resources :products do
         post :replenish, on: :member
         get "by-barcode/:barcode", on: :collection, action: :by_barcode
