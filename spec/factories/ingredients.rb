@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :ingredient do
-    name { "Vodka" }
+    sequence(:name) { |n| "Ingredient #{n}" }
     unit { "oz" }
     association :restaurant
   end

@@ -1,6 +1,17 @@
 class Api::V1::IngredientsController < ApplicationController
   def index
-    ingredients = current_restaurant.ingredients
+    ingredients = current_restaurant.ingredients.order(:name)
+
+    if params[:search].present?
+      query = "%#{params[:search].strip.downcase}%"
+      ingredients = ingredients.where("LOWER(name) LIKE ?", query)
+    end
+
+    if params[:simple] == "true"
+      render json: ingredients.select(:id, :name)
+      return
+    end
+
     render json: ingredients
   end
 

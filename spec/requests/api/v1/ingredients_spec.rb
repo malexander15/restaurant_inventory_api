@@ -14,6 +14,28 @@ RSpec.describe "Ingredients API", type: :request do
       expect(response).to have_http_status(:ok)
       expect(JSON.parse(response.body).length).to eq(2)
     end
+
+    it "filters ingredients by search term" do
+      create(:ingredient, restaurant: restaurant, name: "Romaine")
+      create(:ingredient, restaurant: restaurant, name: "Tomato")
+
+      get "/api/v1/ingredients?search=roma", headers: headers
+
+      expect(response).to have_http_status(:ok)
+      results = JSON.parse(response.body)
+      expect(results.length).to eq(1)
+      expect(results.first["name"]).to eq("Romaine")
+    end
+
+    it "returns simple format when requested" do
+      create(:ingredient, restaurant: restaurant, name: "Romaine")
+
+      get "/api/v1/ingredients?simple=true", headers: headers
+
+      expect(response).to have_http_status(:ok)
+      results = JSON.parse(response.body)
+      expect(results.first.keys).to eq(["id", "name"])
+    end
   end
 
   describe "GET /api/v1/ingredients/:id" do
