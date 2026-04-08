@@ -5,5 +5,6 @@ FactoryBot.define do
     stock_quantity { 10 }
     unit_cost { 1.0 }
     association :restaurant
+    ingredient { association :ingredient, restaurant: restaurant }
   end
 end

@@ -4,6 +4,6 @@ class Ingredient < ApplicationRecord
   belongs_to :restaurant
   has_many :products
 
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: { scope: :restaurant_id }
   validates :unit, presence: true
 end

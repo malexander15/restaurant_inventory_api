@@ -12,6 +12,12 @@ RSpec.describe Product, type: :model do
       expect(product).not_to be_valid
     end
 
+    it "requires an ingredient" do
+      product = Product.new(name: "Cheese", unit: :oz, stock_quantity: 10, unit_cost: 1)
+      expect(product).not_to be_valid
+      expect(product.errors[:ingredient]).to include("can't be blank")
+    end
+
     it "requires non-negative stock_quantity" do
       product = Product.new(name: "Cheese", unit: :oz, stock_quantity: -1, unit_cost: 1)
       expect(product).not_to be_valid

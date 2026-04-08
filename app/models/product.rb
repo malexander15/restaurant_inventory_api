@@ -4,8 +4,7 @@ class Product < ApplicationRecord
   has_many :recipe_ingredients, as: :ingredient
   belongs_to :restaurant
   belongs_to :product_category, optional: true
-  belongs_to :ingredient, optional: true
-
+  belongs_to :ingredient
   validates :name, presence: true
   validates :unit, presence: true
   validates :ingredient, presence: true
@@ -13,8 +12,6 @@ class Product < ApplicationRecord
   validates :unit_cost, numericality: { greater_than_or_equal_to: 0 }
   validates :barcode, uniqueness: { scope: :restaurant_id }, allow_nil: true
   validate :ingredient_belongs_to_restaurant
-
-  before_validation :ensure_ingredient
 
   def below_par?
     return false unless par_level.present?
@@ -28,15 +25,6 @@ class Product < ApplicationRecord
   end
 
   private
-
-  def ensure_ingredient
-    return if ingredient.present? || restaurant.nil?
-
-    self.ingredient = restaurant.ingredients.find_or_create_by(
-      name: name,
-      unit: unit
-    )
-  end
 
   def ingredient_belongs_to_restaurant
     return unless ingredient.present? && restaurant.present?
