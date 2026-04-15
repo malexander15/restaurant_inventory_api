@@ -4,13 +4,13 @@ RSpec.describe RecipeIngredient, type: :model do
   let(:restaurant) { create(:restaurant) }
 
   describe "validations" do
-    it "is valid with a product ingredient" do
+    it "is valid with an ingredient ingredient" do
       recipe = create(:recipe, restaurant: restaurant)
-      product = create(:product, restaurant: restaurant)
+      ingredient = create(:ingredient, restaurant: restaurant)
 
       ri = described_class.new(
         recipe: recipe,
-        ingredient: product,
+        ingredient: ingredient,
         quantity: 4
       )
 
@@ -36,11 +36,11 @@ RSpec.describe RecipeIngredient, type: :model do
 
     it "requires quantity to be positive" do
       recipe = create(:recipe, restaurant: restaurant)
-      product = create(:product, restaurant: restaurant)
+      ingredient = create(:ingredient, restaurant: restaurant)
 
       ri = described_class.new(
         recipe: recipe,
-        ingredient: product,
+        ingredient: ingredient,
         quantity: -1
       )
 

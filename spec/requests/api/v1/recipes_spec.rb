@@ -88,12 +88,13 @@ RSpec.describe "Recipes API", type: :request do
 
   describe "POST /api/v1/recipes/:id/deplete" do
     it "depletes inventory" do
-      cheese = create(:product, restaurant: restaurant, stock_quantity: 100)
+      cheese_ingredient = create(:ingredient, restaurant: restaurant)
+      cheese_product = create(:product, restaurant: restaurant, ingredient: cheese_ingredient, stock_quantity: 100)
       recipe = create(:recipe, restaurant: restaurant)
 
       create(:recipe_ingredient,
              recipe: recipe,
-             ingredient: cheese,
+             ingredient: cheese_ingredient,
              quantity: 10)
 
       post "/api/v1/recipes/#{recipe.id}/deplete",
@@ -101,16 +102,17 @@ RSpec.describe "Recipes API", type: :request do
            headers: headers
 
       expect(response).to have_http_status(:ok)
-      expect(cheese.reload.stock_quantity).to eq(80)
+      expect(cheese_product.reload.stock_quantity).to eq(80)
     end
 
     it "returns error when inventory is insufficient" do
-      cheese = create(:product, restaurant: restaurant, stock_quantity: 5)
+      cheese_ingredient = create(:ingredient, restaurant: restaurant)
+      cheese_product = create(:product, restaurant: restaurant, ingredient: cheese_ingredient, stock_quantity: 5)
       recipe = create(:recipe, restaurant: restaurant)
 
       create(:recipe_ingredient,
              recipe: recipe,
-             ingredient: cheese,
+             ingredient: cheese_ingredient,
              quantity: 10)
 
       post "/api/v1/recipes/#{recipe.id}/deplete",
