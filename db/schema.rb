@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_03_10_010511) do
+ActiveRecord::Schema[7.0].define(version: 2026_04_08_041451) do
+  create_table "ingredients", force: :cascade do |t|
+    t.string "name"
+    t.integer "unit"
+    t.integer "restaurant_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["restaurant_id"], name: "index_ingredients_on_restaurant_id"
+  end
+
   create_table "product_categories", force: :cascade do |t|
     t.string "name", null: false
     t.integer "restaurant_id", null: false
@@ -32,6 +41,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_10_010511) do
     t.datetime "updated_at", precision: nil, null: false
     t.integer "restaurant_id", null: false
     t.integer "product_category_id"
+    t.integer "ingredient_id", null: false
+    t.index ["ingredient_id"], name: "index_products_on_ingredient_id"
     t.index ["product_category_id"], name: "index_products_on_product_category_id"
     t.index ["restaurant_id", "barcode"], name: "index_products_on_restaurant_id_and_barcode", unique: true
     t.index ["restaurant_id"], name: "index_products_on_restaurant_id"
@@ -69,7 +80,9 @@ ActiveRecord::Schema[7.0].define(version: 2026_03_10_010511) do
     t.index ["email"], name: "index_restaurants_on_email", unique: true
   end
 
+  add_foreign_key "ingredients", "restaurants"
   add_foreign_key "product_categories", "restaurants"
+  add_foreign_key "products", "ingredients"
   add_foreign_key "products", "product_categories"
   add_foreign_key "products", "restaurants"
   add_foreign_key "recipe_ingredients", "recipes"

@@ -16,18 +16,18 @@ RSpec.describe Recipe, type: :model do
   end
 
   describe "associations" do
-    it "can have product ingredients" do
+    it "can have ingredient ingredients" do
       recipe = create(:recipe, restaurant: restaurant)
-      cheese = create(:product, restaurant: restaurant)
+      cheese_ingredient = create(:ingredient, restaurant: restaurant)
 
       create(
         :recipe_ingredient,
         recipe: recipe,
-        ingredient: cheese,
+        ingredient: cheese_ingredient,
         quantity: 4
       )
 
-      expect(recipe.ingredients).to include(cheese)
+      expect(recipe.ingredients).to include(cheese_ingredient)
     end
 
     it "can have recipe ingredients (prepped items)" do
@@ -51,9 +51,11 @@ RSpec.describe Recipe, type: :model do
 
   describe "#deplete_inventory!" do
     it "depletes product inventory when a menu item is sold" do
-      cheese = create(
+      cheese_ingredient = create(:ingredient, restaurant: restaurant)
+      cheese_product = create(
         :product,
         restaurant: restaurant,
+        ingredient: cheese_ingredient,
         stock_quantity: 100
       )
 
@@ -66,19 +68,21 @@ RSpec.describe Recipe, type: :model do
       create(
         :recipe_ingredient,
         recipe: quesadilla,
-        ingredient: cheese,
+        ingredient: cheese_ingredient,
         quantity: 10
       )
 
       expect {
         quesadilla.deplete_inventory!(3)
-      }.to change { cheese.reload.stock_quantity }.from(100).to(70)
+      }.to change { cheese_product.reload.stock_quantity }.from(100).to(70)
     end
 
     it "recursively depletes inventory through prepped items" do
-      raw_chicken = create(
+      raw_chicken_ingredient = create(:ingredient, restaurant: restaurant)
+      raw_chicken_product = create(
         :product,
         restaurant: restaurant,
+        ingredient: raw_chicken_ingredient,
         stock_quantity: 200
       )
 
@@ -91,7 +95,7 @@ RSpec.describe Recipe, type: :model do
       create(
         :recipe_ingredient,
         recipe: grilled_chicken,
-        ingredient: raw_chicken,
+        ingredient: raw_chicken_ingredient,
         quantity: 20
       )
 
@@ -110,13 +114,15 @@ RSpec.describe Recipe, type: :model do
 
       expect {
         quesadilla.deplete_inventory!(2)
-      }.to change { raw_chicken.reload.stock_quantity }.from(200).to(160)
+      }.to change { raw_chicken_product.reload.stock_quantity }.from(200).to(160)
     end
 
     it "raises an error when inventory is insufficient" do
-      cheese = create(
+      cheese_ingredient = create(:ingredient, restaurant: restaurant)
+      cheese_product = create(
         :product,
         restaurant: restaurant,
+        ingredient: cheese_ingredient,
         stock_quantity: 10
       )
 
@@ -125,7 +131,7 @@ RSpec.describe Recipe, type: :model do
       create(
         :recipe_ingredient,
         recipe: quesadilla,
-        ingredient: cheese,
+        ingredient: cheese_ingredient,
         quantity: 8
       )
 
@@ -135,15 +141,20 @@ RSpec.describe Recipe, type: :model do
     end
 
     it "does not partially deplete inventory when one ingredient fails" do
-      cheese = create(
+      cheese_ingredient = create(:ingredient, restaurant: restaurant)
+      chicken_ingredient = create(:ingredient, restaurant: restaurant)
+
+      cheese_product = create(
         :product,
         restaurant: restaurant,
+        ingredient: cheese_ingredient,
         stock_quantity: 100
       )
 
-      chicken = create(
+      chicken_product = create(
         :product,
         restaurant: restaurant,
+        ingredient: chicken_ingredient,
         stock_quantity: 5
       )
 
@@ -152,14 +163,14 @@ RSpec.describe Recipe, type: :model do
       create(
         :recipe_ingredient,
         recipe: recipe,
-        ingredient: cheese,
+        ingredient: cheese_ingredient,
         quantity: 10
       )
 
       create(
         :recipe_ingredient,
         recipe: recipe,
-        ingredient: chicken,
+        ingredient: chicken_ingredient,
         quantity: 10
       )
 
@@ -167,8 +178,8 @@ RSpec.describe Recipe, type: :model do
         recipe.deplete_inventory!(1)
       }.to raise_error(StandardError)
 
-      expect(cheese.reload.stock_quantity).to eq(100)
-      expect(chicken.reload.stock_quantity).to eq(5)
+      expect(cheese_product.reload.stock_quantity).to eq(100)
+      expect(chicken_product.reload.stock_quantity).to eq(5)
     end
   end
 end

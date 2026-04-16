@@ -7,14 +7,14 @@ RSpec.describe "RecipeIngredients API", type: :request do
   describe "POST /api/v1/recipes/:recipe_id/recipe_ingredients" do
     it "creates a recipe ingredient" do
       recipe = create(:recipe, restaurant: restaurant)
-      product = create(:product, restaurant: restaurant)
+      ingredient = create(:ingredient, restaurant: restaurant)
 
       expect {
         post "/api/v1/recipes/#{recipe.id}/recipe_ingredients",
              params: {
                recipe_ingredient: {
-                 ingredient_id: product.id,
-                 ingredient_type: "Product",
+                 ingredient_id: ingredient.id,
+                 ingredient_type: "Ingredient",
                  quantity: 2
                }
              }.to_json,
@@ -26,13 +26,13 @@ RSpec.describe "RecipeIngredients API", type: :request do
 
     it "returns 422 for invalid quantity" do
       recipe = create(:recipe, restaurant: restaurant)
-      product = create(:product, restaurant: restaurant)
+      ingredient = create(:ingredient, restaurant: restaurant)
 
       post "/api/v1/recipes/#{recipe.id}/recipe_ingredients",
            params: {
              recipe_ingredient: {
-               ingredient_id: product.id,
-               ingredient_type: "Product",
+               ingredient_id: ingredient.id,
+               ingredient_type: "Ingredient",
                quantity: 0
              }
            }.to_json,
@@ -44,13 +44,13 @@ RSpec.describe "RecipeIngredients API", type: :request do
     it "does not allow adding ingredients to another restaurant's recipe" do
       other_restaurant = create(:restaurant)
       recipe = create(:recipe, restaurant: other_restaurant)
-      product = create(:product, restaurant: restaurant)
+      ingredient = create(:ingredient, restaurant: restaurant)
 
       post "/api/v1/recipes/#{recipe.id}/recipe_ingredients",
            params: {
              recipe_ingredient: {
-               ingredient_id: product.id,
-               ingredient_type: "Product",
+               ingredient_id: ingredient.id,
+               ingredient_type: "Ingredient",
                quantity: 1
              }
            }.to_json,

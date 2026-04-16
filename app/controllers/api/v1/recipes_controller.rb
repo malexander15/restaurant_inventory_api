@@ -20,7 +20,7 @@ class Api::V1::RecipesController < ApplicationController
       recipe_ingredients: {
         include: {
           ingredient: {
-            only: [:id, :name, :stock_quantity, :unit]
+            only: [:id, :name, :unit]
           }
         }
       }
@@ -34,7 +34,7 @@ class Api::V1::RecipesController < ApplicationController
       recipe_ingredients: {
         include: {
           ingredient: {
-            only: [:id, :name, :stock_quantity, :unit]
+            only: [:id, :name, :unit]
           }
         }
       }

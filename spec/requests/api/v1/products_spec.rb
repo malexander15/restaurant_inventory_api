@@ -37,12 +37,15 @@ RSpec.describe "Products API", type: :request do
   end
 
   it "creates a product" do
+    ingredient = create(:ingredient, restaurant: restaurant)
+
     params = {
       product: {
         name: "Cheese",
         unit: "oz",
         stock_quantity: 10,
-        unit_cost: 1.5
+        unit_cost: 1.5,
+        ingredient_id: ingredient.id
       }
     }.to_json
 
@@ -67,6 +70,16 @@ RSpec.describe "Products API", type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(product.reload.name).to eq("Updated Name")
+    end
+
+    it "returns errors when ingredient_id is invalid" do
+      product = create(:product, restaurant: restaurant)
+
+      patch "/api/v1/products/#{product.id}",
+            params: { product: { ingredient_id: 0 } }.to_json,
+            headers: headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
     end
   end
 
