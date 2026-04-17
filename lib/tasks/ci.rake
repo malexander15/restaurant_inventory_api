@@ -22,17 +22,26 @@ namespace :ci do
 
     puts "✅ CI restaurant ready (id=#{restaurant.id})"
 
-    #   Seed baseline products
+    puts "Seeding baseline ingredients..."
+    cheese_ingredient = Ingredient.find_or_create_by!(
+      restaurant: restaurant,
+      name: "Cheese"
+    ) do |i|
+      i.unit = "oz"
+    end
+
+    puts "Cheese ingredient ready"
+
     puts "Seeding baseline products..."
-
-
     Product.find_or_create_by!(
       restaurant: restaurant,
       name: "Cheese"
     ) do |p|
+      p.ingredient = cheese_ingredient
       p.unit = "oz"
       p.stock_quantity = 1000
       p.unit_cost = 0.25
+      p.barcode = "CI-CHEESE-001"
     end
 
     puts "Cheese product ready"
