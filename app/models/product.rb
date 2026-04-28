@@ -12,6 +12,7 @@ class Product < ApplicationRecord
   validates :unit_cost, numericality: { greater_than_or_equal_to: 0 }
   validates :barcode, uniqueness: { scope: :restaurant_id }, allow_nil: true
   validate :ingredient_belongs_to_restaurant
+  validate :unit_matches_ingredient
 
   def below_par?
     return false unless par_level.present?
@@ -31,6 +32,14 @@ class Product < ApplicationRecord
 
     unless ingredient.restaurant_id == restaurant_id
       errors.add(:ingredient_id, "must belong to the same restaurant")
+    end
+  end
+
+  def unit_matches_ingredient
+    return unless ingredient.present? && unit.present?
+
+    if ingredient.unit != unit
+      errors.add(:unit, "must match the unit of the associated ingredient") if ingredient.unit != unit
     end
   end
 end
