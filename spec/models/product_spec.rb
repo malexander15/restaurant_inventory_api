@@ -48,6 +48,14 @@ RSpec.describe Product, type: :model do
 
       expect(dupe).not_to be_valid
     end
+
+    it "requires unit to match ingredient unit" do
+      ingredient = create(:ingredient, unit: :oz)
+      product = build(:product, ingredient: ingredient, unit: :pcs)
+
+      expect(product).not_to be_valid
+      expect(product.errors[:unit]).to include("must match the unit of the associated ingredient")
+    end
   end
 
   describe "#below_par?" do
