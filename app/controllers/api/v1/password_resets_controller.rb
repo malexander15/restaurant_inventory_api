@@ -8,13 +8,20 @@ class Api::V1::PasswordResetsController < ApplicationController
     # 👆 prevents email enumeration
 
     token = restaurant.generate_password_reset!
+    reset_url = password_reset_url_for(token)
 
-    reset_url = "#{ENV.fetch("FRONTEND_URL")}/reset-password?token=#{token}"
+    if expose_reset_url?
+      render json: {
+        message: "Password reset generated",
+        reset_url: reset_url
+      }
+    else
+      RestaurantMailer.password_reset(restaurant, reset_url).deliver_now
 
-    render json: {
-      message: "Password reset generated",
-      reset_url: reset_url # 👈 DEV ONLY
-    }
+      render json: {
+        message: "If an account with that email exists, a password reset email has been sent."
+      }
+    end
   end
 
   def update
@@ -33,5 +40,16 @@ class Api::V1::PasswordResetsController < ApplicationController
     )
 
     render json: { message: "Password reset successful" }
+  end
+
+  private
+
+  def expose_reset_url?
+    Rails.env.development? || Rails.env.test?
+  end
+
+  def password_reset_url_for(token)
+    frontend_url = ENV.fetch("FRONTEND_URL", "http://localhost:3000")
+    "#{frontend_url}/reset-password?token=#{token}"
   end
 end

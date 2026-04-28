@@ -19,6 +19,6 @@ class Restaurant < ApplicationRecord
   end
 
   def password_reset_expired?
-    reset_password_sent_at < 2.hours.ago
+    reset_password_sent_at.blank? || reset_password_sent_at < 15.minutes.ago
   end
 end
